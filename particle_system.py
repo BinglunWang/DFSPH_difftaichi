@@ -102,6 +102,7 @@ class ParticleSystem:
             self.rigid_omega = ti.Vector.field(3, dtype=float, shape=self.num_objects)
             self.rigid_omega0 = ti.Vector.field(3, dtype=float, shape=self.num_objects)
             self.rigid_force = ti.Vector.field(self.dim, dtype=float, shape=self.num_objects)
+            self.rigid_force_copy = ti.Vector.field(self.dim, dtype=float, shape=self.num_objects)
             self.rigid_torque = ti.Vector.field(self.dim, dtype=float, shape=self.num_objects)
             self.rigid_mass = ti.field(dtype=float, shape=self.num_objects)
             self.rigid_inertia = ti.Matrix.field(m=3, n=3, dtype=float, shape=self.num_objects)
@@ -411,22 +412,29 @@ class ParticleSystem:
         for i in range(self.particle_num[None]):
             np_arr[i] = src_arr[i]
     
-    def copy_to_vis_buffer(self, invisible_objects=[]):
+    def copy_to_vis_buffer(self, invisible_objects=[], force_color = None):
         if len(invisible_objects) != 0:
             self.x_vis_buffer.fill(0.0)
             self.color_vis_buffer.fill(0.0)
         for obj_id in self.object_collection:
             if obj_id not in invisible_objects:
-                self._copy_to_vis_buffer(obj_id)
+                R = force_color[0]
+                G = force_color[1]
+                B = force_color[2]
+                self._copy_to_vis_buffer(obj_id, R, G, B)
 
     @ti.kernel
-    def _copy_to_vis_buffer(self, obj_id: int):
+    def _copy_to_vis_buffer(self, obj_id: int, R: float, G: float, B: float):
         assert self.GGUI
         # FIXME: make it equal to actual particle num
         for i in range(self.particle_max_num):
             if self.object_id[i] == obj_id:
                 self.x_vis_buffer[i] = self.x[i]
-                self.color_vis_buffer[i] = self.color[i] / 255.0
+
+                if self.object_id[i] == 1:
+                    self.color_vis_buffer[i] = ti.Vector([R, G, B])
+                else:
+                    self.color_vis_buffer[i] = self.color[i] / 255.0
 
     def dump(self, obj_id):
         np_object_id = self.object_id.to_numpy()

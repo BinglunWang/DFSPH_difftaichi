@@ -54,6 +54,7 @@ class SPHBase:
 
         self.dt = ti.field(float, shape=())
         self.dt[None] = self.ps.cfg.get_cfg("timeStepSize")
+        self.force_color = None
 
     @ti.func
     def cubic_kernel(self, r_norm):
@@ -329,6 +330,10 @@ class SPHBase:
     def solve_rigid_body(self):
         for r_obj_id in self.ps.rigid_x:
             self.ps.rigid_force[r_obj_id] += self.ps.rigid_mass[r_obj_id] * ti.Vector(self.g)
+            # print('\n\n\n-------------------- rigid force:')
+            # print(r_obj_id, self.ps.rigid_force[r_obj_id], '\n\n')
+            # self.force_color = self.ps.rigid_force[r_obj_id]
+            self.ps.rigid_force_copy[r_obj_id] = self.ps.rigid_force[r_obj_id]
 
             self.ps.rigid_v[r_obj_id] += self.dt[None] * self.ps.rigid_force[r_obj_id] / self.ps.rigid_mass[r_obj_id]
             self.ps.rigid_force[r_obj_id].fill(0.0)

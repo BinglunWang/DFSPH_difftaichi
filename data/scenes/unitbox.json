@@ -19,11 +19,11 @@
 	"RigidBodies": [
 		{
             "objectId": 1,
-			"geometryFile": "./data/models/Dragon_50k.obj",
+			"geometryFile": "./data/models/UnitBox.obj",
 			"translation": [3.5, 0.05, 1.0],
 			"rotationAxis": [0, 1, 0],
 			"rotationAngle": 0,
-			"scale": [1, 1, 1],
+			"scale": [0.2, 0.2, 0.2],
 			"velocity": [0.0, 0.0, 0.0],
 			"density": 1000.0,
 			"color": [255, 255, 255], 

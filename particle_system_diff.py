@@ -125,8 +125,11 @@ class ParticleSystem:
             self.rigid_inv_mass = ti.field(dtype=float)
             self.rigid_inv_inertia = ti.Matrix.field(m=3, n=3, dtype=float, needs_grad=True)
             self.is_rigid = ti.field(dtype=int)
+
+      
             ti.root.dense(ti.ij, (self.steps, self.num_objects)).place(self.rigid_x, self.rigid_v, self.rigid_quaternion, self.rigid_omega, self.rigid_force, self.rigid_torque,
                                                                                        self.rigid_inertia, self.rigid_inv_inertia)
+            
             ti.root.dense(ti.ij, (self.steps, self.num_objects)).place(self.rigid_x.grad, self.rigid_v.grad, self.rigid_quaternion.grad, self.rigid_omega.grad,
                                                                         self.rigid_force.grad, self.rigid_torque.grad, self.rigid_inertia.grad, self.rigid_inv_inertia.grad)
             ti.root.dense(ti.i, (self.num_objects)).place(self.rigid_rest_cm, self.rigid_v0, self.rigid_omega0, self.rigid_mass, self.rigid_inertia0, self.rigid_inv_mass, self.is_rigid)

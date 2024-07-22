@@ -15,6 +15,8 @@ def build_solver(ps: ParticleSystem):
     # if solver_type == 0:
     #     return WCSPHSolver(ps)
     # elif solver_type == 4:
+    #     return DFSPHSolver(ps)
+    
     if solver_type == 4:
         return DFSPHSolver(ps)
     else:
@@ -89,18 +91,26 @@ if __name__ == "__main__":
 
     cnt = 0
     cnt_ply = 0
-
+    force_color = ti.field(dtype=float, shape=(3))
     while window.running:
         for i in range(substeps):
             solver.step()
-        ps.copy_to_vis_buffer(invisible_objects=invisible_objects)
+        # print('hihihih\n\n\n\n\=-', solver.ps.rigid_force_copy[1])
+        ps.rigid_force = solver.ps.rigid_force_copy[1]
+        # normalise the force+
+        print(ps.rigid_force)
+        force_color = ps.rigid_force / np.linalg.norm(ps.rigid_force)
+        force_color = (force_color + 1) / 2
+       
+
+        ps.copy_to_vis_buffer(invisible_objects=invisible_objects, force_color = force_color)
         if ps.dim == 2:
             canvas.set_background_color(background_color)
             canvas.circles(ps.x_vis_buffer, radius=ps.particle_radius, color=particle_color)
         elif ps.dim == 3:
             camera.track_user_inputs(window, movement_speed=movement_speed, hold_key=ti.ui.LMB)
             scene.set_camera(camera)
-
+            
             scene.point_light((2.0, 2.0, 2.0), color=(1.0, 1.0, 1.0))
             scene.particles(ps.x_vis_buffer, radius=ps.particle_radius, per_vertex_color=ps.color_vis_buffer)
 

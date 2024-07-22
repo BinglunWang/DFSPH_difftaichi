@@ -24,9 +24,11 @@ def build_solver(ps: ParticleSystem):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='SPH Taichi')
+    
     parser.add_argument('--scene_file',
                         default='',
                         help='scene file')
+
     args = parser.parse_args()
     scene_path = args.scene_file
     config = SimConfig(scene_file_path=scene_path)

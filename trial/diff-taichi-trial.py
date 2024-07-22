@@ -1,6 +1,6 @@
 import taichi as ti
 import sys
-sys.path.append('..')
+sys.path.append('D:\GitHub\DFSPH_difftaichi')
 from sph_base import *
 
 ti.init(arch=ti.gpu, device_memory_fraction=0.5, debug=True)
