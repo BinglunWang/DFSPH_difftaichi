@@ -1,0 +1,1 @@
+python run_simulation.py --scene_file "D:\GitHub\DFSPH_difftaichi\data\scenes\armadillo_bath_dynamic_single_box.json"

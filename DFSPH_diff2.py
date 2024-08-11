@@ -88,6 +88,7 @@ class DFSPHSolver(SPHBase):
     
 
     @ti.kernel
+    ## !! Wrong implementation
     def compute_DFSPH_factor(self, step: int, iter: int):
         for p_i in range(self.ps.particle_num[None]):
             if self.ps.material[step, p_i] == self.ps.material_fluid:
@@ -103,6 +104,7 @@ class DFSPHSolver(SPHBase):
                     elif self.ps.material[step, p_j] == self.ps.material_solid:
                         # Boundary neighbors
                         ## Akinci2012
+                        ## ?? why boundary neighbors are not considered in norm sqr
                         grad_p_j = self.ps.m_V[step, p_j] * self.cubic_kernel_derivative(self.ps.x[step, p_i] - self.ps.x[step, p_j])
                         grad_p_i += grad_p_j
                 
@@ -110,6 +112,7 @@ class DFSPHSolver(SPHBase):
 
                 # Compute pressure stiffness denominator
                 factor = 0.0
+                ## ?? why miss density square
                 if sum_grad_p_k > 1e-6:
                     factor = -1.0 / sum_grad_p_k
                 else:

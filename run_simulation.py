@@ -4,7 +4,7 @@ import taichi as ti
 import numpy as np
 from config_builder import SimConfig
 from particle_system import ParticleSystem
-from DFSPH import DFSPHSolver
+from DFSPH_org1 import DFSPHSolver
 from WCSPH import WCSPHSolver
 
 

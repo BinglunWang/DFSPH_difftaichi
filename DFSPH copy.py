@@ -363,35 +363,8 @@ class DFSPHSolver(SPHBase):
 
             # TODO: if warmstart
             # get kappa V
-            
-
-            self.ps.diff_buffer[p_i] = 0.0
-            self.ps.for_all_neighbors(p_i, self.diff_pressure_solve_iteration_task_buff, k_i)
-            self.ps.diff_buffer[p_i] = self.ps.diff_buffer[p_i] * self.dt[None]
-            self.ps.for_all_neighbors(p_i, self.diff_pressure_solve_iteration_task, self.ps.dfsph_factor[p_i])
-
             self.ps.for_all_neighbors(p_i, self.pressure_solve_iteration_task, k_i)
     
-    @ti.func
-    def diff_pressure_solve_iteration_task_buff(self, p_i, p_j, k_i: ti.template())
-        self.ps.diff_buffer[p_i] += self.ps.m_V[p_j] * self.cubic_kernel_derivative(self.ps.x[p_i] - self.ps.x[p_j])
-        
-    @ti.func
-    def diff_pressure_solve_iteration_task(self, p_i, p_j, k_i: ti.template()):
-        if self.ps.material[p_j] == self.ps.material_solid and self.ps.material[p_i] == self.ps.material_fluid:
-            # d to v_fi
-            V_bj = self.ps.m_V[p_j]
-            m_fi = self.ps.m[p_i]
-            term1 = m_fi *V_bj
-            
-            rho_fi = self.ps.density[p_i]
-            inv_rho_fi = 1 / rho_fi
-            inv_dt = 1 / self.dt[None]
-            inv_dt2 = 1 / (self.dt[None] * self.dt[None])
-            term2 = inv_rho_fi * self.cubic_kernel_derivative(self.ps.x[p_i] - self.ps.x[p_j]) * inv_dt2 * k_i
-            self.ps.diff_f_vi += term1 * term2 * self.ps.diff_buffer[p_i]
-
-
 
     @ti.func
     def pressure_solve_iteration_task(self, p_i, p_j, k_i: ti.template()):

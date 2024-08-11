@@ -129,6 +129,8 @@ class ParticleSystem:
         self.material = ti.field(dtype=int, shape=self.particle_max_num)
         self.color = ti.Vector.field(3, dtype=int, shape=self.particle_max_num)
         self.is_dynamic = ti.field(dtype=int, shape=self.particle_max_num)
+        self.diff_f_vi = ti.field(dtype=float, shape=self.particle_max_num)
+        self.diff_buffer = ti.field(dtype=float, shape=self.particle_max_num)
 
         if self.cfg.get_cfg("simulationMethod") == 4:
             self.dfsph_factor = ti.field(dtype=float, shape=self.particle_max_num)
